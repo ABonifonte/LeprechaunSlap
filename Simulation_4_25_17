@@ -1,0 +1,422 @@
+import matplotlib
+import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import pandas as pd
+import tkinter as tk
+from tkinter import ttk
+from tkinter import *
+from random import shuffle
+from numpy.random import choice
+import random
+import operator
+import numpy as np
+import matplotlib.pyplot as plt
+
+colorList=['red','orange','yellow','green','blue','violet']
+
+class Leprechaun_Slap:
+    def __init__(self,rootWin):
+        self.GUISetup()
+            
+    def GUISetup(self):     
+        
+        rootWin.title("Leprechaun Slap") #Set the title for our window
+        
+        BasicOptions = LabelFrame(rootWin, text=" 1. Basic Options: ", font=(None, 18))
+        BasicOptions.grid(column=0, row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+        
+        AdvancedOptions = LabelFrame(rootWin, text=" 2. Advanced Options: ", font=(None, 15))
+        AdvancedOptions.grid(column=8, row=0, columnspan=7, sticky='E', padx=5, pady=5, ipadx=10, ipady=5)
+        
+        GameplayOptions = LabelFrame(rootWin, text=" 3. Victory Options: ", font=(None, 15))
+        GameplayOptions.grid(row=1, columnspan=14, sticky='S', padx=5, pady=5, ipadx=5, ipady=5)
+        
+        ResultsFrame = LabelFrame(rootWin, text=" 4. Results ", font=(None, 15))
+        ResultsFrame.grid(row=2, columnspan=14, sticky='S', padx=5, pady=5, ipadx=5, ipady=5)
+        
+        self.ColorSlider = Scale(BasicOptions, from_=5, to=15, orient=HORIZONTAL, font=(None, 15))
+        self.ColorSlider.grid(row=1, column=0)   
+        self.ColorSlider.set(10)
+        l = Label(BasicOptions, text="# of each color card", font=(None, 15))
+        l.grid(row=2,column=0)
+
+        self.LeprechaunSlider = Scale(BasicOptions, from_=1, to=7, orient=HORIZONTAL, font=(None, 15))
+        self.LeprechaunSlider.grid(row=3, column=0)
+        self.LeprechaunSlider.set(3)
+        l = Label(BasicOptions, text="# of each Leprechaun card", font=(None, 15))
+        l.grid(row=4,column=0)     
+        
+        self.PlayerSlider = Scale(BasicOptions, from_=1, to=6, orient=HORIZONTAL, font=(None, 15))
+        self.PlayerSlider.grid(row=5, column=0) 
+        self.PlayerSlider.set(4)
+        l = Label(BasicOptions, text="# of Players", font=(None, 15))
+        l.grid(row=6,column=0)  
+
+        self.HandSizeSlider = Scale(BasicOptions, from_=4, to=12, orient=HORIZONTAL, font=(None, 15))
+        self.HandSizeSlider.grid(row=1, column=1)
+        self.HandSizeSlider.set(7)
+        l = Label(BasicOptions, text="# of Starting Cards", font=(None, 15))
+        l.grid(row=2,column=1)  
+        
+        self.DrawPileSlider = Scale(BasicOptions, from_=1, to=3, orient=HORIZONTAL, font=(None, 15))
+        self.DrawPileSlider.grid(row=3, column=1)    
+        self.DrawPileSlider.set(1)
+        l = Label(BasicOptions, text="# of Draw Piles", font=(None, 15))
+        l.grid(row=4,column=1)
+        
+        self.PlayPileSlider = Scale(BasicOptions, from_=1, to=3, orient=HORIZONTAL, font=(None, 15))
+        self.PlayPileSlider.grid(row=5, column=1)   
+        self.PlayPileSlider.set(1)
+        l = Label(BasicOptions, text="# of Play Piles", font=(None, 15))
+        l.grid(row=6,column=1)
+        
+        
+        self.Player1Skill = Scale(AdvancedOptions, from_=1, to=5, orient=HORIZONTAL, font=(None, 15))
+        self.Player1Skill.grid(row=1, column=0)   
+        self.Player1Skill.set(3)
+        l = Label(AdvancedOptions, text="Player 1 Skill", font=(None, 15))
+        l.grid(row=2,column=0)
+
+        self.Player3Skill = Scale(AdvancedOptions, from_=1, to=5, orient=HORIZONTAL, font=(None, 15))
+        self.Player3Skill.grid(row=3, column=0)
+        self.Player3Skill.set(3)
+        l = Label(AdvancedOptions, text="Player 3 Skill", font=(None, 15))
+        l.grid(row=4,column=0)     
+        
+        self.Player5Skill = Scale(AdvancedOptions, from_=1, to=5, orient=HORIZONTAL, font=(None, 15))
+        self.Player5Skill.grid(row=5, column=0) 
+        self.Player5Skill.set(3)
+        l = Label(AdvancedOptions, text="Player 5 Skill", font=(None, 15))
+        l.grid(row=6,column=0)  
+
+        self.Player2Skill = Scale(AdvancedOptions, from_=1, to=5, orient=HORIZONTAL, font=(None, 15))
+        self.Player2Skill.grid(row=1, column=1)
+        self.Player2Skill.set(3)
+        l = Label(AdvancedOptions, text="Player 2 Skill", font=(None, 15))
+        l.grid(row=2,column=1)  
+        
+        self.Player4Skill = Scale(AdvancedOptions, from_=1, to=5, orient=HORIZONTAL, font=(None, 15))
+        self.Player4Skill.grid(row=3, column=1)    
+        self.Player4Skill.set(3)
+        l = Label(AdvancedOptions, text="Player 4 Skill", font=(None, 15))
+        l.grid(row=4,column=1)
+        
+        self.Player6Skill = Scale(AdvancedOptions, from_=1, to=5, orient=HORIZONTAL, font=(None, 15))
+        self.Player6Skill.grid(row=5, column=1)   
+        self.Player6Skill.set(3)
+        l = Label(AdvancedOptions, text="Player 5 Skill", font=(None, 15))
+        l.grid(row=6,column=1)
+
+
+        l = Label(GameplayOptions, text="Double points for Rainbow in discard?", font=(None, 15))
+        l.grid(row=1,column=0)
+        self.doubleRainbow = IntVar()
+        Radiobutton(GameplayOptions, text="Yes", font=(15), variable=self.doubleRainbow, value=1).grid(row=2,column=0)
+        Radiobutton(GameplayOptions, text="No", font=(15), variable=self.doubleRainbow, value=0).grid(row=3,column=0)
+        
+        
+        self.PointsSlider = Scale(GameplayOptions, from_=10, to=50, orient=HORIZONTAL, font=(None, 15))
+        self.PointsSlider.grid(row=1, column=1)     
+        self.PointsSlider.set(20)
+        l = Label(GameplayOptions, text="# of Points for Win", font=(None, 15))
+        l.grid(row=2,column=1)
+        
+        self.RoundsSlider = Scale(GameplayOptions, from_=5, to=20, orient=HORIZONTAL, font=(None, 15))
+        self.RoundsSlider.grid(row=1, column=2)       
+        self.RoundsSlider.set(10)
+        l = Label(GameplayOptions, text="# of Rounds Until Game Over", font=(None, 15))
+        l.grid(row=2,column=2)
+        
+
+        
+        PointPlay =  Button(GameplayOptions, text='Play With Points Victory', font=(None, 15), command=lambda: self.simulateGames(ResultsFrame,'Points'))
+        PointPlay.grid(row=3, column=1)
+        
+        RoundPlay = Button(GameplayOptions, text='Play With Rounds Victory', font=(None, 15), command=lambda: self.simulateGames(ResultsFrame,'Rounds'))
+        RoundPlay.grid(row=3, column=2)
+
+     
+    #Define function to run simulation
+    def simulateGames(self,ResultsFrame,playOption):
+
+        global globalGamesStalled, globalRoundScores, globalRoundsPlayed, globalHandWins,globalRainbowWins, globalPlayerWins
+        
+        #Clear out statistics each change
+        globalGamesStalled = 0
+        globalRoundScores = [] #Tracks round scores
+        globalHandWins = 0 #Tracks rounds won by emptying hand
+        globalRainbowWins = 0 #Tracks rounds won by spotting rainbow
+        globalPlayerWins = [0] * self.PlayerSlider.get() #Tracks games won by each player
+        #globalPlayerWins = [0] * 6 #Tracks games won by each player
+        globalRoundsPlayed = [] #Tracks number of rounds per game
+        
+        reps = 50
+        
+        for i in range(reps):
+            myGame = Game(self,playOption)
+            #myGame.playGame() #Leave uncommented to see problems with game simulation
+            try:
+                myGame.playGame()
+            except:
+                #print("Game Position Stuck!")
+                globalGamesStalled += 1
+        
+        fig1 = Figure(figsize=(5,4), dpi=100)
+        scoresDist = fig1.gca()
+        scoresDist.hist(globalRoundScores, bins='auto')
+        scoresDist.set_xlabel('Round Scores, Average:{}'.format(round(np.mean(globalRoundScores),1)), fontsize = 15)
+        scoresDist.set_ylabel('Frequency', fontsize = 15)
+        scoresDist.set_title('Score Distribution', fontsize = 15)
+
+        canvas1 = FigureCanvasTkAgg(fig1, master=ResultsFrame)
+        canvas1.show()
+        canvas1.get_tk_widget().grid(row=0, column=0)
+
+        
+        fig2 = Figure(figsize=(5,4), dpi=100)
+        scores2Dist = fig2.gca()
+        scores2Dist.hist(globalRoundsPlayed, bins='auto')
+        scores2Dist.set_xlabel('Rounds Played, Average:{}'.format(round(np.mean(globalRoundsPlayed),1)), fontsize = 15)
+        scores2Dist.set_ylabel('Frequency', fontsize = 15)
+        scores2Dist.set_title('Rounds Played', fontsize = 15)
+        
+        canvas2 = FigureCanvasTkAgg(fig2, master=ResultsFrame)
+        canvas2.show()
+        canvas2.get_tk_widget().grid(row=0, column=2)
+        
+        
+        percentStuckString = '{0} % of games get stuck if no additional cards are drawn'.format(round(globalGamesStalled/reps*100, 1))       
+        percentStuckLabel = Label(ResultsFrame, text=percentStuckString, font=(None, 15))
+        percentStuckLabel.grid(row=1,column=0,columnspan=3)
+        
+        percentRainbowString = '{0} % of rounds end by spotting a rainbow'.format(round(globalRainbowWins/(globalRainbowWins+globalHandWins)*100, 1))       
+        percentRainbowLabel = Label(ResultsFrame, text=percentRainbowString, font=(None, 15))
+        percentRainbowLabel.grid(row=2,column=0,columnspan=3)
+        
+        #print(globalHandWins," rounds won by emptying hand")
+        #print(globalRainbowWins," rounds won by spotting rainbow")
+        #print(globalPlayerWins)
+        #print(globalGamesStalled," games stalled without drawing extra cards")
+
+
+        
+#Define Game class
+class Game (object) :
+    def __init__(self,options,GameplayOption):
+               
+        self.nColorCards = options.ColorSlider.get()
+        #print("The number of Color Cards is ", self.nColorCards)
+        self.nLeprechaunCards = options.LeprechaunSlider.get()
+        self.nPlayers = options.PlayerSlider.get()
+        self.handSize = options.HandSizeSlider.get()
+        self.playerSkills = [0.25,0.25,0.25,0.25]
+        self.playerRainbowSkills = [1,1,1,1]
+        self.victoryScore = options.PointsSlider.get()
+        self.victoryRounds = options.RoundsSlider.get()
+        self.rainbowsDoubled = options.doubleRainbow
+        self.GameplayOption = GameplayOption
+        
+        #Initialize player scores
+        self.scores = [0] * self.nPlayers
+        
+        #Initialize round count
+        self.rounds = 0
+    
+    def playGame(self): #Plays until victory conditions reached
+        #print(len(myGame.playerHands[0]),len(myGame.playerHands[1]),len(myGame.playerHands[2]),len(myGame.playerHands[3]))
+        myGame = self
+        flag = 0 #Game not over
+        
+        while flag == 0:
+            myGame.rounds += 1
+            myRound = gameRound(myGame)
+            newScores = myRound.playRound()
+            for player in range(self.nPlayers):
+                self.scores[player] += newScores[player]
+
+        
+            #Check if game over
+            if self.GameplayOption == 'Points':
+                maxScore_index, maxScore_value = max(enumerate(myGame.scores), key=operator.itemgetter(1))
+                if maxScore_value > self.victoryScore:
+                    flag = 1
+                    #print('Game over, player ', maxScore_index + 1, ' wins!')
+                    globalRoundsPlayed.append(myGame.rounds) #Number of rounds played
+                    globalPlayerWins[maxScore_index] += 1 #Record player victory
+                
+            elif self.GameplayOption == 'Rounds':
+                maxScore_index, maxScore_value = max(enumerate(myGame.scores), key=operator.itemgetter(1))
+                if myGame.rounds >= self.victoryRounds:
+                    flag = 1
+                    #print('Game over, player ', maxScore_index + 1, ' wins!')
+                    globalRoundsPlayed.append(myGame.rounds) #Number of rounds played
+                    globalPlayerWins[maxScore_index] += 1 #Record player victory
+                
+
+#Define round object (because everything except score resets after 1 round)
+class gameRound(object):
+    def __init__(self,myGame):
+        #Initialize discard pile
+        self.discards = []
+        
+        #Initialize deck
+        self.myDeck = []
+        
+        #Initialize params
+        self.nColorCards = myGame.nColorCards
+        self.nLeprechaunCards = myGame.nLeprechaunCards
+        self.nPlayers = myGame.nPlayers
+        self.handSize = myGame.handSize
+        self.playerSkills = myGame.playerSkills
+        self.playerRainbowSkills = myGame.playerRainbowSkills
+        self.rainbowsDoubled = myGame.rainbowsDoubled
+        
+        for color in colorList:
+            for i in range(self.nColorCards):
+                self.myDeck.append(Card(color,0))
+    
+            for i in range(self.nLeprechaunCards):
+                self.myDeck.append(Card(color,1))
+        
+        #Shuffles
+        shuffle(self.myDeck)
+
+        #Initialize Player Hands
+        self.playerHands = []
+        for player in range(self.nPlayers):
+            self.playerHands.append(self.myDeck[0:self.handSize])
+            del self.myDeck[0:self.handSize]
+
+        #Initialize play card (assumes 1 play pile)
+        self.playCard = self.myDeck[0]
+        self.discards.append(self.myDeck[0]) #Redundant with line above
+        del self.myDeck[0]
+        
+    def playRound(self): #Plays 1 round
+        scores = [0] * self.nPlayers
+        myGame = self
+        roundWinner = -1
+        while roundWinner == -1:
+            myGame = myGame.playAction()
+            #print(len(myGame.playerHands[0]),len(myGame.playerHands[1]),len(myGame.playerHands[2]),len(myGame.playerHands[3]))
+            roundWinner = myGame.checkRoundOver()
+        
+        #Update scores
+        thisScore = myGame.calcRoundScore()
+        scores[roundWinner] += thisScore
+        globalRoundScores.append(thisScore) #Global score tracking
+        return(scores)
+    
+    def calcRoundScore(self): #Calculates score at the end of the round
+        sumLeprechauns = 0
+        for card in range(len(self.discards)):
+            sumLeprechauns += self.discards[card].leprechaun
+        
+        if self.rainbowsDoubled == 1: #Double points
+            #Check for rainbow
+            discardColors = []
+            for card in range(len(self.discards)):
+                discardColors.append(self.discards[card].color)
+            discardColors = list(set(discardColors)) #Remove duplicate candidate players
+            if len(discardColors)==6: #rainbow
+                return sumLeprechauns*2 #Points doubled
+            else:
+                return sumLeprechauns
+        else:
+            return sumLeprechauns
+        
+    def checkRoundOver(self): #Checks if round is over
+        global globalHandWins, globalRainbowWins
+        
+        handSizes = []
+        roundWinner = -1
+        
+        #Win by empying hand
+        for player in range(self.nPlayers):
+            handSizes.append(len(self.playerHands[player]))
+        minHand_index, minHand_value = min(enumerate(handSizes), key=operator.itemgetter(1))
+        if minHand_value == 0: #Player has emptied their hand
+            roundWinner = minHand_index
+        
+        if roundWinner > -1: #Player emptied hand
+            globalHandWins += 1 #Global stat tracking
+            return roundWinner # Do not allow players to spot rainbow if final hand card played
+        else:
+        
+            #Win by spotting rainbow
+            discardColors = []
+            for card in range(len(self.discards)):
+                discardColors.append(self.discards[card].color)
+            discardColors = list(set(discardColors)) #Remove duplicate candidate players
+            #print(discardColors)
+        
+            if len(discardColors)==6: #Rainbow exists
+                spotters = [] #Those who spot the rainbow
+                for player in range(self.nPlayers):
+                    U = np.random.uniform()
+                    if U < self.playerRainbowSkills[player]: #Player spots the rainbow
+                        spotters.append(player)               
+                if len(spotters)>0: #Some player spotted it
+                    globalRainbowWins += 1 #global stat tracking
+                    roundWinner = choice(spotters) #Uniformly random amongst those who spotted rainbow
+                    
+            return roundWinner #-1 if no winner, index of winner otherwise
+        
+    def playAction(self): #Plays 1 card
+        #newGame = self
+        #Check all playable options
+        candidatePlayers = [] #List of only players with move
+        possiblePlays = [] #List of lists of possible moves per player
+        possiblePlaysidx = [] #Reference for index of card to remove
+        for player in range(self.nPlayers):
+            playerPlays = []
+            playerPlaysidx = []
+            for card in range(len(self.playerHands[player])):
+                if self.playCard.checkPlay(self.playerHands[player][card]):
+                    candidatePlayers.append(player)
+                    playerPlays.append(self.playerHands[player][card])
+                    playerPlaysidx.append(card)
+            possiblePlays.append(playerPlays) 
+            possiblePlaysidx.append(playerPlaysidx)
+        candidatePlayers = list(set(candidatePlayers)) #Remove duplicate candidate players
+
+        #Determine which candidate player (weighted by skill) makes their play
+        weightedSum = 0
+        weights = []
+        for player in candidatePlayers:
+            weightedSum += self.playerSkills[player]
+        for player in candidatePlayers:
+            weights.append(self.playerSkills[player]/weightedSum)
+        selectedPlayer = choice(candidatePlayers, p=weights)
+
+        #Select card from that player to play
+        selectedCardidx = random.choice(range(len(possiblePlays[selectedPlayer])))
+        selectedCard = possiblePlays[selectedPlayer][selectedCardidx]
+      
+        #Update play card, discard pile, and player hands
+        self.playCard = selectedCard #Update play card
+        self.discards.append(selectedCard) #Adds to discard pile for scoring
+        del self.playerHands[selectedPlayer][selectedCardidx] #Removes card from hand
+        
+        return self
+
+    
+#Define class card
+class Card (object) :
+    def __init__(self,color,leprechaun):
+        self.color = color
+        self.leprechaun = leprechaun
+    
+    #Check if card playable
+    def checkPlay(self,card2):
+        if abs(colorList.index(self.color) - colorList.index(card2.color)) <= 1 or abs(colorList.index(self.color) - colorList.index(card2.color))==5:
+            return 1
+        else:
+            return 0               
+
+
+
+rootWin = Tk()
+app = Leprechaun_Slap(rootWin)
+rootWin.mainloop()
